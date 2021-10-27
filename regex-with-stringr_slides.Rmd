@@ -1,0 +1,367 @@
+---
+title: "**Regular expressions** with `stringr`"
+subtitle: "Workshop session"
+# author: "Anna-Lisa Wirth, Lukas Warode"
+author:
+  - Anna-Lisa Wirth
+  - Lukas Warode
+institute: "Hertie School -- _Introduction to Data Science_ "
+date: "2021/11/04 (updated: `r Sys.Date()`)"
+output:
+  xaringan::moon_reader:
+    includes:
+      after_body: insert_hertie_logo.html
+    css: [default, "custom_css.css", metropolis, metropolis-fonts]
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: "16:9"
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+options(htmltools.dir.version = FALSE)
+```
+
+---
+
+# Outline
+
+1. What are regular expressions?
+
+--
+
+2. Why `stringr` (in combination with regex)?
+
+--
+
+3. Meta characters
+
+--
+
+4. Shorthand characters
+
+--
+
+5. Look arounds
+
+--
+
+6. More complex example
+
+---
+
+class: inverse, center, middle
+
+# Getting Started: What are _Regular Expressions_?
+
+---
+
+# Regular expressions
+
+--
+
+background-image: url(https://i.redd.it/an2lhgcr9kc61.png)
+background-size: contain
+
+Image credit: [Reddit](https://www.reddit.com/r/ProgrammerHumor/comments/l1k4iy/every_time/)
+
+---
+
+# Regular expression
+
+--
+
+.pull-left[
+- Regular expression, also called _regex_ or _regexp_:
+
+  - Sequence of characters that is applied to search or detect patterns in strings
+
+  - Very influential and widespread language framework in theoretical computer science
+]
+
+--
+
+.pull-right[
+Example of a `regex`:
+
+<img src="https://raw.githubusercontent.com/ziishaned/learn-regex/master/img/regexp-en.png" width="600">
+
+Image credit: [Learn regex the easy way](https://github.com/ziishaned/learn-regex)
+]
+
+---
+
+# Package `stringr`
+
+--
+
+class: inverse, center, middle
+
+<img src="https://raw.githubusercontent.com/rstudio/hex-stickers/master/SVG/stringr.svg" width="400">
+
+Image credit: [stringr](https://raw.githubusercontent.com/rstudio/hex-stickers/master/SVG/stringr.svg)
+
+---
+
+# Why `stringr` in combination with _regex_?
+
+--
+
+background-image: url("screenshot_stringr_cheatsheet_pattern.png")
+background-size: contain
+
+---
+
+# `stringr` vs. `stringi`
+
+.pull-left[
+- One of the most famous packages for string manipulation
+
+```{r, eval=TRUE}
+cranlogs::cran_downloads(
+  packages = c("stringr", "stringi"), 
+  from = Sys.Date() - 365,
+  to = Sys.Date()
+) %>% 
+  group_by(package) %>% 
+  summarise(total_count = sum(count))
+  
+```
+]
+
+--
+
+.pull-right[
+- Why not use `stringi`?
+
+  - `stringr` is built on the basis of of `stringi`
+
+- Different scope
+
+  - `stringi`: Comprehensive and complex framework with a variety of different functions
+
+  - `stringr`: Rather simple and concise structure, not as flexible
+]  
+
+---
+
+# Meta characters __I__
+
+.pull-left-small[
+|Meta character|Description|
+|:----:|----|
+|__.__|Period matches any single character except a line break.|
+|__[ ]__|Character class. Matches any character contained between the square brackets.|
+|__[^ ]__|Negated character class. Matches any character that is not contained between the square brackets|
+
+Table credit: [Learn regex the easy way](https://github.com/ziishaned/learn-regex)
+]
+
+--
+
+.pull-right-wide[
+```{r}
+{{mds_string <- "M.Sc. Data Science for Public Policy 2023"}}
+
+str_extract_all(mds_string, ".")
+
+str_extract_all(mds_string, "[P]")
+
+str_extract_all(mds_string, "[^P]")
+```
+] 
+
+---
+
+# Meta characters __II__
+
+.pull-left-small[
+|Meta character|Description|
+|:----:|----|
+|__*__|Matches 0 or more repetitions of the preceding symbol.|
+|__+__|Matches 1 or more repetitions of the preceding symbol.|
+|__?__|Makes the preceding symbol optional.|
+]
+
+--
+
+.pull-right-wide[
+```{r}
+str_extract_all(mds_string, "[Policy]*")
+
+str_extract_all(mds_string, "[Policy]+")
+
+str_extract_all(mds_string, "[Policy]?")
+```
+] 
+
+---
+
+# Meta characters __III__
+
+.pull-left-small[
+|Meta character|Description|
+|:----:|----|
+|__{n,m}__|Braces. Matches at least "n" but not more than "m" repetitions of the preceding symbol.|
+|__(xyz)__|Character group. Matches the characters xyz in that exact order.|
+]
+
+--
+
+.pull-right-wide[
+```{r}
+{{round_string <- "The solution is 42.9573, however 42 is sufficient"}}
+
+# Exactly n (1)
+str_extract_all(round_string, "[0-9]{1}")
+
+# n or more (3 or more)
+str_extract_all(round_string, "[0-9]{3,}")
+```
+]
+
+---
+
+# Meta characters __III__
+
+.pull-left-small[
+|Meta character|Description|
+|:----:|----|
+|__{n,m}__|Braces. Matches at least "n" but not more than "m" repetitions of the preceding symbol.|
+|__(xyz)__|Character group. Matches the characters xyz in that exact order.|
+]
+
+.pull-right-wide[
+```{r}
+# between n and m (1 and 2)
+str_extract_all(round_string, "[0-9]{1,2}")
+
+# between n and m (1 and 4)
+str_extract_all(round_string, "[0-9]{1,4}")
+
+# all characters inside ()
+str_extract_all(round_string, "(solution is)")
+```
+]
+
+---
+
+# Meta characters __IV__
+
+.pull-left-small[
+|Meta character|Description|
+|:----:|----|
+|__&#124;__|Alternation. Matches either the characters before or the characters after the symbol.|
+|__&#92;__|Escapes the next character. This allows you to match reserved characters <code>[ ] ( ) { } . * + ? ^ $ \ &#124;</code>|
+]
+
+--
+
+.pull-right-wide[
+```{r}
+{{science_string <- "Data Science: 9.5/10, Pseudoscience: 2.5/10"}}
+
+str_extract_all(science_string, "\\.")
+
+str_extract_all(science_string, "[0-9]\\.[0-9]")
+
+str_extract_all(science_string, "(Data |Pseudo)[s|S]cience")
+```
+]
+
+---
+
+# Meta characters __V__
+
+.pull-left-small[
+|Meta character|Description|
+|:----:|----|
+|__^__|Matches the beginning of the input.|
+|__$__|Matches the end of the input.|
+]
+
+--
+
+.pull-right-wide[
+```{r}
+?str_locate_all
+
+str_locate_all("aaaa", "^a")
+
+str_locate_all("aaaa", "aa$")
+```
+]
+
+---
+
+# Furhter predefined character (POSIX)
+
+|POSIX|Description|
+|:----:|----|
+|__[:digit:]__|Matches digits.|
+|__[:alpha:]__|Matches letters.|
+|__[:lower:]__|Matches lowercase letters.|
+|__[:upper:]__|Matches uppercase letters.|
+|__[:alnum:]__|Matches numbers and letters.|
+|__[:punct:]__|Matches punctuation.|
+|__[:graph:]__|Matches letters, numbers and punctuation.|
+|__[:space:]__|Matches space characters (\s).|
+|__[:blank:]__|Matches space and tab.|
+
+```{r}
+str_extract_all(science_string, "[:digit:]")
+str_extract_all(science_string, "[:digit:]+")
+```
+
+
+---
+
+# Shorthand character classes
+
+|Shorthand|Description|
+|:----:|----|
+|__.__|Any character except new line|
+|__\w__|Matches alphanumeric characters: `[a-zA-Z0-9_]`|
+|__\W__|Matches non-alphanumeric characters: `[^\w]`|
+|__\d__|Matches digits: `[0-9]`|
+|__\D__|Matches non-digits: `[^\d]`|
+|__\s__|Matches whitespace characters: `[\t\n\f\r\p{Z}]`|
+|__\S__|Matches non-whitespace characters: `[^\s]`|
+
+Table credit: [Learn regex the easy way](https://github.com/ziishaned/learn-regex)
+
+```{r}
+# add examples
+```
+
+---
+
+# Look arounds
+
+|Symbol|Description|
+|:----:|----|
+|__?=__|Positive Lookahead|
+|__?!__|Negative Lookahead|
+|__?<=__|Positive Lookbehind|
+|__?<!__|Negative Lookbehind|
+
+Table credit: [Learn regex the easy way](https://github.com/ziishaned/learn-regex)
+
+```{r}
+str_extract_all(science_string, "(?<=/)[:digit:]+")
+
+# add further examples
+```
+
+---
+
+class: inverse, center, middle
+
+# More complex examples
+
+
+
+

@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Regular expressions with stringr</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Anna-Lisa Wirth" />
+    <meta name="author" content="Lukas Warode" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/metropolis.css" rel="stylesheet" />
+    <link href="libs/remark-css/metropolis-fonts.css" rel="stylesheet" />
+    <link rel="stylesheet" href="custom_css.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# <strong>Regular expressions</strong> with <code>stringr</code>
+## Workshop session
+### Anna-Lisa Wirth
+### Lukas Warode
+### Hertie School – <em>Introduction to Data Science</em>
+### 2021/11/04 (updated: 2021-10-27)
+
+---
+
+
+
+
+---
+
+# Outline
+
+1. What are regular expressions?
+
+--
+
+2. Why `stringr` (in combination with regex)?
+
+--
+
+3. Meta characters
+
+--
+
+4. Shorthand characters
+
+--
+
+5. Look arounds
+
+--
+
+6. More complex example
+
+---
+
+class: inverse, center, middle
+
+# Getting Started: What are _Regular Expressions_?
+
+---
+
+# Regular expressions
+
+--
+
+background-image: url(https://i.redd.it/an2lhgcr9kc61.png)
+background-size: contain
+
+Image credit: [Reddit](https://www.reddit.com/r/ProgrammerHumor/comments/l1k4iy/every_time/)
+
+---
+
+# Regular expression
+
+--
+
+.pull-left[
+- Regular expression, also called _regex_ or _regexp_:
+
+  - Sequence of characters that is applied to search or detect patterns in strings
+
+  - Very influential and widespread language framework in theoretical computer science
+]
+
+--
+
+.pull-right[
+Example of a `regex`:
+
+&lt;img src="https://raw.githubusercontent.com/ziishaned/learn-regex/master/img/regexp-en.png" width="600"&gt;
+
+Image credit: [Learn regex the easy way](https://github.com/ziishaned/learn-regex)
+]
+
+---
+
+# Package `stringr`
+
+--
+
+class: inverse, center, middle
+
+&lt;img src="https://raw.githubusercontent.com/rstudio/hex-stickers/master/SVG/stringr.svg" width="400"&gt;
+
+Image credit: [stringr](https://raw.githubusercontent.com/rstudio/hex-stickers/master/SVG/stringr.svg)
+
+---
+
+# Why `stringr` in combination with _regex_?
+
+--
+
+background-image: url("screenshot_stringr_cheatsheet_pattern.png")
+background-size: contain
+
+---
+
+# `stringr` vs. `stringi`
+
+.pull-left[
+- One of the most famous packages for string manipulation
+
+
+```r
+cranlogs::cran_downloads(
+  packages = c("stringr", "stringi"), 
+  from = Sys.Date() - 365,
+  to = Sys.Date()
+) %&gt;% 
+  group_by(package) %&gt;% 
+  summarise(total_count = sum(count))
+```
+
+```
+## # A tibble: 2 × 2
+##   package total_count
+##   &lt;chr&gt;         &lt;dbl&gt;
+## 1 stringi     9744048
+## 2 stringr     9487199
+```
+]
+
+--
+
+.pull-right[
+- Why not use `stringi`?
+
+  - `stringr` is built on the basis of of `stringi`
+
+- Different scope
+
+  - `stringi`: Comprehensive and complex framework with a variety of different functions
+
+  - `stringr`: Rather simple and concise structure, not as flexible
+]  
+
+---
+
+# Meta characters __I__
+
+.pull-left-small[
+|Meta character|Description|
+|:----:|----|
+|__.__|Period matches any single character except a line break.|
+|__[ ]__|Character class. Matches any character contained between the square brackets.|
+|__[^ ]__|Negated character class. Matches any character that is not contained between the square brackets|
+
+Table credit: [Learn regex the easy way](https://github.com/ziishaned/learn-regex)
+]
+
+--
+
+.pull-right-wide[
+
+```r
+*mds_string &lt;- "M.Sc. Data Science for Public Policy 2023"
+
+str_extract_all(mds_string, ".")
+```
+
+```
+## [[1]]
+##  [1] "M" "." "S" "c" "." " " "D" "a" "t" "a" " " "S" "c" "i" "e" "n" "c" "e" " "
+## [20] "f" "o" "r" " " "P" "u" "b" "l" "i" "c" " " "P" "o" "l" "i" "c" "y" " " "2"
+## [39] "0" "2" "3"
+```
+
+```r
+str_extract_all(mds_string, "[P]")
+```
+
+```
+## [[1]]
+## [1] "P" "P"
+```
+
+```r
+str_extract_all(mds_string, "[^P]")
+```
+
+```
+## [[1]]
+##  [1] "M" "." "S" "c" "." " " "D" "a" "t" "a" " " "S" "c" "i" "e" "n" "c" "e" " "
+## [20] "f" "o" "r" " " "u" "b" "l" "i" "c" " " "o" "l" "i" "c" "y" " " "2" "0" "2"
+## [39] "3"
+```
+] 
+
+---
+
+# Meta characters __II__
+
+.pull-left-small[
+|Meta character|Description|
+|:----:|----|
+|__*__|Matches 0 or more repetitions of the preceding symbol.|
+|__+__|Matches 1 or more repetitions of the preceding symbol.|
+|__?__|Makes the preceding symbol optional.|
+]
+
+--
+
+.pull-right-wide[
+
+```r
+str_extract_all(mds_string, "[Policy]*")
+```
+
+```
+## [[1]]
+##  [1] ""       ""       ""       "c"      ""       ""       ""       ""      
+##  [9] ""       ""       ""       ""       "ci"     ""       ""       "c"     
+## [17] ""       ""       ""       "o"      ""       ""       "P"      ""      
+## [25] ""       "lic"    ""       "Policy" ""       ""       ""       ""      
+## [33] ""       ""
+```
+
+```r
+str_extract_all(mds_string, "[Policy]+")
+```
+
+```
+## [[1]]
+## [1] "c"      "ci"     "c"      "o"      "P"      "lic"    "Policy"
+```
+
+```r
+str_extract_all(mds_string, "[Policy]?")
+```
+
+```
+## [[1]]
+##  [1] ""  ""  ""  "c" ""  ""  ""  ""  ""  ""  ""  ""  "c" "i" ""  ""  "c" ""  "" 
+## [20] ""  "o" ""  ""  "P" ""  ""  "l" "i" "c" ""  "P" "o" "l" "i" "c" "y" ""  "" 
+## [39] ""  ""  ""  ""
+```
+] 
+
+---
+
+# Meta characters __III__
+
+.pull-left-small[
+|Meta character|Description|
+|:----:|----|
+|__{n,m}__|Braces. Matches at least "n" but not more than "m" repetitions of the preceding symbol.|
+|__(xyz)__|Character group. Matches the characters xyz in that exact order.|
+]
+
+--
+
+.pull-right-wide[
+
+```r
+*round_string &lt;- "The solution is 42.9573, however 42 is sufficient"
+
+# Exactly n (1)
+str_extract_all(round_string, "[0-9]{1}")
+```
+
+```
+## [[1]]
+## [1] "4" "2" "9" "5" "7" "3" "4" "2"
+```
+
+```r
+# n or more (3 or more)
+str_extract_all(round_string, "[0-9]{3,}")
+```
+
+```
+## [[1]]
+## [1] "9573"
+```
+]
+
+---
+
+# Meta characters __III__
+
+.pull-left-small[
+|Meta character|Description|
+|:----:|----|
+|__{n,m}__|Braces. Matches at least "n" but not more than "m" repetitions of the preceding symbol.|
+|__(xyz)__|Character group. Matches the characters xyz in that exact order.|
+]
+
+.pull-right-wide[
+
+```r
+# between n and m (1 and 2)
+str_extract_all(round_string, "[0-9]{1,2}")
+```
+
+```
+## [[1]]
+## [1] "42" "95" "73" "42"
+```
+
+```r
+# between n and m (1 and 4)
+str_extract_all(round_string, "[0-9]{1,4}")
+```
+
+```
+## [[1]]
+## [1] "42"   "9573" "42"
+```
+
+```r
+# all characters inside ()
+str_extract_all(round_string, "(solution is)")
+```
+
+```
+## [[1]]
+## [1] "solution is"
+```
+]
+
+---
+
+# Meta characters __IV__
+
+.pull-left-small[
+|Meta character|Description|
+|:----:|----|
+|__&amp;#124;__|Alternation. Matches either the characters before or the characters after the symbol.|
+|__&amp;#92;__|Escapes the next character. This allows you to match reserved characters &lt;code&gt;[ ] ( ) { } . * + ? ^ $ \ &amp;#124;&lt;/code&gt;|
+]
+
+--
+
+.pull-right-wide[
+
+```r
+*science_string &lt;- "Data Science: 9.5/10, Pseudoscience: 2.5/10"
+
+str_extract_all(science_string, "\\.")
+```
+
+```
+## [[1]]
+## [1] "." "."
+```
+
+```r
+str_extract_all(science_string, "[0-9]\\.[0-9]")
+```
+
+```
+## [[1]]
+## [1] "9.5" "2.5"
+```
+
+```r
+str_extract_all(science_string, "(Data |Pseudo)[s|S]cience")
+```
+
+```
+## [[1]]
+## [1] "Data Science"  "Pseudoscience"
+```
+]
+
+---
+
+# Meta characters __V__
+
+.pull-left-small[
+|Meta character|Description|
+|:----:|----|
+|__^__|Matches the beginning of the input.|
+|__$__|Matches the end of the input.|
+]
+
+--
+
+.pull-right-wide[
+
+```r
+?str_locate_all
+
+str_locate_all("aaaa", "^a")
+```
+
+```
+## [[1]]
+##      start end
+## [1,]     1   1
+```
+
+```r
+str_locate_all("aaaa", "aa$")
+```
+
+```
+## [[1]]
+##      start end
+## [1,]     3   4
+```
+]
+
+---
+
+# Furhter predefined character (POSIX)
+
+|POSIX|Description|
+|:----:|----|
+|__[:digit:]__|Matches digits.|
+|__[:alpha:]__|Matches letters.|
+|__[:lower:]__|Matches lowercase letters.|
+|__[:upper:]__|Matches uppercase letters.|
+|__[:alnum:]__|Matches numbers and letters.|
+|__[:punct:]__|Matches punctuation.|
+|__[:graph:]__|Matches letters, numbers and punctuation.|
+|__[:space:]__|Matches space characters (\s).|
+|__[:blank:]__|Matches space and tab.|
+
+
+```r
+str_extract_all(science_string, "[:digit:]")
+```
+
+```
+## [[1]]
+## [1] "9" "5" "1" "0" "2" "5" "1" "0"
+```
+
+```r
+str_extract_all(science_string, "[:digit:]+")
+```
+
+```
+## [[1]]
+## [1] "9"  "5"  "10" "2"  "5"  "10"
+```
+
+
+---
+
+# Shorthand character classes
+
+|Shorthand|Description|
+|:----:|----|
+|__.__|Any character except new line|
+|__\w__|Matches alphanumeric characters: `[a-zA-Z0-9_]`|
+|__\W__|Matches non-alphanumeric characters: `[^\w]`|
+|__\d__|Matches digits: `[0-9]`|
+|__\D__|Matches non-digits: `[^\d]`|
+|__\s__|Matches whitespace characters: `[\t\n\f\r\p{Z}]`|
+|__\S__|Matches non-whitespace characters: `[^\s]`|
+
+Table credit: [Learn regex the easy way](https://github.com/ziishaned/learn-regex)
+
+
+```r
+# add examples
+```
+
+---
+
+# Look arounds
+
+|Symbol|Description|
+|:----:|----|
+|__?=__|Positive Lookahead|
+|__?!__|Negative Lookahead|
+|__?&lt;=__|Positive Lookbehind|
+|__?&lt;!__|Negative Lookbehind|
+
+Table credit: [Learn regex the easy way](https://github.com/ziishaned/learn-regex)
+
+
+```r
+str_extract_all(science_string, "(?&lt;=/)[:digit:]+")
+```
+
+```
+## [[1]]
+## [1] "10" "10"
+```
+
+```r
+# add further examples
+```
+
+---
+
+class: inverse, center, middle
+
+# More complex examples
+
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+<style>
+.logo {
+  background-image: url(https://upload.wikimedia.org/wikipedia/commons/2/23/Hertie_School_of_Governance_logo.svg);
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+  top: 1.25em;
+  right: 1em;
+  width: 210px;
+  height: 128px;
+  z-index: 0;
+}
+</style>
+
+<script>
+document
+  .querySelectorAll(
+    '.remark-slide-content' +
+    ':not(.title-slide)' +
+    // add additional classes to exclude here, e.g.
+    // ':not(.inverse)' +
+    ':not(.hide-logo)'
+  )
+  .forEach(el => {
+    el.innerHTML += '<div class="logo"></div>';
+  });
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

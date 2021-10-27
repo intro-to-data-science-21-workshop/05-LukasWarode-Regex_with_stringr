@@ -1,0 +1,27 @@
+<style>
+.logo {
+  background-image: url(https://upload.wikimedia.org/wikipedia/commons/2/23/Hertie_School_of_Governance_logo.svg);
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+  top: 1.25em;
+  right: 1em;
+  width: 210px;
+  height: 128px;
+  z-index: 0;
+}
+</style>
+
+<script>
+document
+  .querySelectorAll(
+    '.remark-slide-content' +
+    ':not(.title-slide)' +
+    // add additional classes to exclude here, e.g.
+    // ':not(.inverse)' +
+    ':not(.hide-logo)'
+  )
+  .forEach(el => {
+    el.innerHTML += '<div class="logo"></div>';
+  });
+</script>
