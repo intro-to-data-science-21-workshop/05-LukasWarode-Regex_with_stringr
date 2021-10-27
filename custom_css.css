@@ -1,0 +1,23 @@
+.pull-left-small {
+    margin-top: -20px;
+  float: left;
+  width: 28%;
+}
+
+.pull-right-small {
+    margin-top: -20px;
+  float: right;
+  width: 28%;
+}
+
+.pull-left-wide {
+  margin-top: -20px;
+  float: left;
+  width: 68%;
+}
+
+.pull-right-wide {
+    margin-top: -20px;
+  float: right;
+  width: 68%;
+}
