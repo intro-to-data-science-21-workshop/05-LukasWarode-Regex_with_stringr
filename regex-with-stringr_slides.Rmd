@@ -1,6 +1,6 @@
 ---
 title: "**Regular expressions** with `stringr`"
-subtitle: "Workshop session"
+subtitle: "Workshop Session"
 # author: "Anna-Lisa Wirth, Lukas Warode"
 author:
   - Anna-Lisa Wirth
@@ -138,13 +138,16 @@ cranlogs::cran_downloads(
 - Why not use `stringi`?
 
   - `stringr` is built on the basis of of `stringi`
+]
 
+.pull-right[
 - Different scope
 
   - `stringi`: Comprehensive and complex framework with a variety of different functions
 
   - `stringr`: Rather simple and concise structure, not as flexible
-]  
+]
+
 
 ---
 
@@ -165,14 +168,32 @@ Table credit: [Learn regex the easy way](https://github.com/ziishaned/learn-rege
 .pull-right-wide[
 ```{r}
 {{mds_string <- "M.Sc. Data Science for Public Policy 2023"}}
+```
+]
 
+--
+
+.pull-right-wide[
+```{r}
 str_extract_all(mds_string, ".")
+```
+]
 
+--
+
+.pull-right-wide[
+```{r}
 str_extract_all(mds_string, "[P]")
+```
+]
 
+--
+
+.pull-right-wide[
+```{r}
 str_extract_all(mds_string, "[^P]")
 ```
-] 
+]
 
 ---
 
@@ -191,9 +212,21 @@ str_extract_all(mds_string, "[^P]")
 .pull-right-wide[
 ```{r}
 str_extract_all(mds_string, "[Policy]*")
+```
+]
 
+--
+
+.pull-right-wide[
+```{r}
 str_extract_all(mds_string, "[Policy]+")
+```
+]
 
+--
+
+.pull-right-wide[
+```{r}
 str_extract_all(mds_string, "[Policy]?")
 ```
 ] 
@@ -214,10 +247,22 @@ str_extract_all(mds_string, "[Policy]?")
 .pull-right-wide[
 ```{r}
 {{round_string <- "The solution is 42.9573, however 42 is sufficient"}}
+```
+]
 
+--
+
+.pull-right-wide[
+```{r}
 # Exactly n (1)
 str_extract_all(round_string, "[0-9]{1}")
+```
+]
 
+--
+
+.pull-right-wide[
+```{r}
 # n or more (3 or more)
 str_extract_all(round_string, "[0-9]{3,}")
 ```
@@ -238,10 +283,22 @@ str_extract_all(round_string, "[0-9]{3,}")
 ```{r}
 # between n and m (1 and 2)
 str_extract_all(round_string, "[0-9]{1,2}")
+```
+]
 
+--
+
+.pull-right-wide[
+```{r}
 # between n and m (1 and 4)
 str_extract_all(round_string, "[0-9]{1,4}")
+```
+]
 
+--
+
+.pull-right-wide[
+```{r}
 # all characters inside ()
 str_extract_all(round_string, "(solution is)")
 ```
@@ -263,11 +320,29 @@ str_extract_all(round_string, "(solution is)")
 .pull-right-wide[
 ```{r}
 {{science_string <- "Data Science: 9.5/10, Pseudoscience: 2.5/10"}}
+```
+]
 
+--
+
+.pull-right-wide[
+```{r}
 str_extract_all(science_string, "\\.")
+```
+]
 
+--
+
+.pull-right-wide[
+```{r}
 str_extract_all(science_string, "[0-9]\\.[0-9]")
+```
+]
 
+--
+
+.pull-right-wide[
+```{r}
 str_extract_all(science_string, "(Data |Pseudo)[s|S]cience")
 ```
 ]
@@ -287,10 +362,14 @@ str_extract_all(science_string, "(Data |Pseudo)[s|S]cience")
 
 .pull-right-wide[
 ```{r}
-?str_locate_all
-
 str_locate_all("aaaa", "^a")
+```
+]
 
+--
+
+.pull-right-wide[
+```{r}
 str_locate_all("aaaa", "aa$")
 ```
 ]
