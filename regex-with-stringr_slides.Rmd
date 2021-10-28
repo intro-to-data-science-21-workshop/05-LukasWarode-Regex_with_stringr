@@ -22,6 +22,7 @@ output:
 
 ```{r setup, include=FALSE}
 library(tidyverse)
+library(stringi) # for displaying number of functions
 options(htmltools.dir.version = FALSE)
 ```
 
@@ -94,11 +95,9 @@ Image credit: [Learn regex the easy way](https://github.com/ziishaned/learn-rege
 
 ---
 
-# Package `stringr`
-
---
-
 class: inverse, center, middle
+
+# Package `stringr`
 
 <img src="https://raw.githubusercontent.com/rstudio/hex-stickers/master/SVG/stringr.svg" width="400">
 
@@ -120,7 +119,7 @@ background-size: contain
 .pull-left[
 - One of the most famous packages for string manipulation
 
-```{r, eval=TRUE}
+```{r}
 cranlogs::cran_downloads(
   packages = c("stringr", "stringi"), 
   from = Sys.Date() - 365,
@@ -135,19 +134,60 @@ cranlogs::cran_downloads(
 --
 
 .pull-right[
-- Why not use `stringi`?
-
-  - `stringr` is built on the basis of of `stringi`
-]
-
-.pull-right[
 - Different scope
 
   - `stringi`: Comprehensive and complex framework with a variety of different functions
 
-  - `stringr`: Rather simple and concise structure, not as flexible
+  - `stringr`: Rather simple and concise structure, not as flexible, also built on the basis of `stringi`
+
+```{r}
+# Number of functions
+map_chr(
+  c("stringr", "stringi"), 
+  function(name) {
+    n_fun <- ls.str(
+      paste0("package:", name), 
+      mode = "function"
+    ) %>% length
+    paste(name, n_fun, sep = ": ")
+  }
+)
+```
 ]
 
+---
+
+# `stringr` functions in combination with _regex_
+
+--
+
+- Detect matches
+
+--
+
+```{r}
+str_detect(letters, "a")
+```
+
+--
+
+```{r}
+str_which(letters, "a")
+```
+
+--
+
+- Subset strings
+
+```{r}
+str_extract("aaaa", "a")
+```
+
+--
+
+```{r}
+str_extract_all("aaaa", "a")
+```
 
 ---
 
@@ -376,7 +416,7 @@ str_locate_all("aaaa", "aa$")
 
 ---
 
-# Furhter predefined character (POSIX)
+# Further predefined characters (POSIX)
 
 |POSIX|Description|
 |:----:|----|
@@ -390,11 +430,36 @@ str_locate_all("aaaa", "aa$")
 |__[:space:]__|Matches space characters (\s).|
 |__[:blank:]__|Matches space and tab.|
 
+Source: [`stringr` cheatsheet](https://github.com/rstudio/cheatsheets/blob/master/strings.pdf)
+
+---
+
+# Further predefined characters (POSIX)
+
 ```{r}
+{{science_string <- "Data Science: 9.5/10, Pseudoscience: 2.5/10"}}
+```
+
+--
+
+```{r}
+# Matching single digits
 str_extract_all(science_string, "[:digit:]")
+```
+
+--
+
+```{r}
+# Matching (1 or more) digits
 str_extract_all(science_string, "[:digit:]+")
 ```
 
+--
+
+```{r}
+# Refining usage of meta characters
+str_extract_all(science_string, "(Data[:space:]|Pseudo)[:alpha:]cience")
+```
 
 ---
 
