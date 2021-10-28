@@ -16,11 +16,11 @@
 class: center, middle, inverse, title-slide
 
 # <strong>Regular expressions</strong> with <code>stringr</code>
-## Workshop session
+## Workshop Session
 ### Anna-Lisa Wirth
 ### Lukas Warode
 ### Hertie School – <em>Introduction to Data Science</em>
-### 2021/11/04 (updated: 2021-10-27)
+### 2021/11/04 (updated: 2021-10-28)
 
 ---
 
@@ -96,11 +96,9 @@ Image credit: [Learn regex the easy way](https://github.com/ziishaned/learn-rege
 
 ---
 
-# Package `stringr`
-
---
-
 class: inverse, center, middle
+
+# Package `stringr`
 
 &lt;img src="https://raw.githubusercontent.com/rstudio/hex-stickers/master/SVG/stringr.svg" width="400"&gt;
 
@@ -137,24 +135,96 @@ cranlogs::cran_downloads(
 ## # A tibble: 2 × 2
 ##   package total_count
 ##   &lt;chr&gt;         &lt;dbl&gt;
-## 1 stringi     9744048
-## 2 stringr     9487199
+## 1 stringi     9711717
+## 2 stringr     9456804
 ```
 ]
 
 --
 
 .pull-right[
-- Why not use `stringi`?
-
-  - `stringr` is built on the basis of of `stringi`
-
 - Different scope
 
   - `stringi`: Comprehensive and complex framework with a variety of different functions
 
-  - `stringr`: Rather simple and concise structure, not as flexible
-]  
+  - `stringr`: Rather simple and concise structure, not as flexible, also built on the basis of `stringi`
+
+
+```r
+# Number of functions
+map_chr(
+  c("stringr", "stringi"), 
+  function(name) {
+    n_fun &lt;- ls.str(
+      paste0("package:", name), 
+      mode = "function"
+    ) %&gt;% length
+    paste(name, n_fun, sep = ": ")
+  }
+)
+```
+
+```
+## [1] "stringr: 49"  "stringi: 256"
+```
+]
+
+---
+
+# `stringr` functions in combination with _regex_
+
+--
+
+- Detect matches
+
+--
+
+
+```r
+str_detect(letters, "a")
+```
+
+```
+##  [1]  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+## [13] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+## [25] FALSE FALSE
+```
+
+--
+
+
+```r
+str_which(letters, "a")
+```
+
+```
+## [1] 1
+```
+
+--
+
+- Subset strings
+
+
+```r
+str_extract("aaaa", "a")
+```
+
+```
+## [1] "a"
+```
+
+--
+
+
+```r
+str_extract_all("aaaa", "a")
+```
+
+```
+## [[1]]
+## [1] "a" "a" "a" "a"
+```
 
 ---
 
@@ -176,7 +246,14 @@ Table credit: [Learn regex the easy way](https://github.com/ziishaned/learn-rege
 
 ```r
 *mds_string &lt;- "M.Sc. Data Science for Public Policy 2023"
+```
+]
 
+--
+
+.pull-right-wide[
+
+```r
 str_extract_all(mds_string, ".")
 ```
 
@@ -186,6 +263,11 @@ str_extract_all(mds_string, ".")
 ## [20] "f" "o" "r" " " "P" "u" "b" "l" "i" "c" " " "P" "o" "l" "i" "c" "y" " " "2"
 ## [39] "0" "2" "3"
 ```
+]
+
+--
+
+.pull-right-wide[
 
 ```r
 str_extract_all(mds_string, "[P]")
@@ -195,6 +277,11 @@ str_extract_all(mds_string, "[P]")
 ## [[1]]
 ## [1] "P" "P"
 ```
+]
+
+--
+
+.pull-right-wide[
 
 ```r
 str_extract_all(mds_string, "[^P]")
@@ -206,7 +293,7 @@ str_extract_all(mds_string, "[^P]")
 ## [20] "f" "o" "r" " " "u" "b" "l" "i" "c" " " "o" "l" "i" "c" "y" " " "2" "0" "2"
 ## [39] "3"
 ```
-] 
+]
 
 ---
 
@@ -236,6 +323,11 @@ str_extract_all(mds_string, "[Policy]*")
 ## [25] ""       "lic"    ""       "Policy" ""       ""       ""       ""      
 ## [33] ""       ""
 ```
+]
+
+--
+
+.pull-right-wide[
 
 ```r
 str_extract_all(mds_string, "[Policy]+")
@@ -245,6 +337,11 @@ str_extract_all(mds_string, "[Policy]+")
 ## [[1]]
 ## [1] "c"      "ci"     "c"      "o"      "P"      "lic"    "Policy"
 ```
+]
+
+--
+
+.pull-right-wide[
 
 ```r
 str_extract_all(mds_string, "[Policy]?")
@@ -275,7 +372,14 @@ str_extract_all(mds_string, "[Policy]?")
 
 ```r
 *round_string &lt;- "The solution is 42.9573, however 42 is sufficient"
+```
+]
 
+--
+
+.pull-right-wide[
+
+```r
 # Exactly n (1)
 str_extract_all(round_string, "[0-9]{1}")
 ```
@@ -284,6 +388,11 @@ str_extract_all(round_string, "[0-9]{1}")
 ## [[1]]
 ## [1] "4" "2" "9" "5" "7" "3" "4" "2"
 ```
+]
+
+--
+
+.pull-right-wide[
 
 ```r
 # n or more (3 or more)
@@ -318,6 +427,11 @@ str_extract_all(round_string, "[0-9]{1,2}")
 ## [[1]]
 ## [1] "42" "95" "73" "42"
 ```
+]
+
+--
+
+.pull-right-wide[
 
 ```r
 # between n and m (1 and 4)
@@ -328,6 +442,11 @@ str_extract_all(round_string, "[0-9]{1,4}")
 ## [[1]]
 ## [1] "42"   "9573" "42"
 ```
+]
+
+--
+
+.pull-right-wide[
 
 ```r
 # all characters inside ()
@@ -357,7 +476,14 @@ str_extract_all(round_string, "(solution is)")
 
 ```r
 *science_string &lt;- "Data Science: 9.5/10, Pseudoscience: 2.5/10"
+```
+]
 
+--
+
+.pull-right-wide[
+
+```r
 str_extract_all(science_string, "\\.")
 ```
 
@@ -365,6 +491,11 @@ str_extract_all(science_string, "\\.")
 ## [[1]]
 ## [1] "." "."
 ```
+]
+
+--
+
+.pull-right-wide[
 
 ```r
 str_extract_all(science_string, "[0-9]\\.[0-9]")
@@ -374,6 +505,11 @@ str_extract_all(science_string, "[0-9]\\.[0-9]")
 ## [[1]]
 ## [1] "9.5" "2.5"
 ```
+]
+
+--
+
+.pull-right-wide[
 
 ```r
 str_extract_all(science_string, "(Data |Pseudo)[s|S]cience")
@@ -401,8 +537,6 @@ str_extract_all(science_string, "(Data |Pseudo)[s|S]cience")
 .pull-right-wide[
 
 ```r
-?str_locate_all
-
 str_locate_all("aaaa", "^a")
 ```
 
@@ -411,6 +545,11 @@ str_locate_all("aaaa", "^a")
 ##      start end
 ## [1,]     1   1
 ```
+]
+
+--
+
+.pull-right-wide[
 
 ```r
 str_locate_all("aaaa", "aa$")
@@ -425,7 +564,7 @@ str_locate_all("aaaa", "aa$")
 
 ---
 
-# Furhter predefined character (POSIX)
+# Further predefined characters (POSIX)
 
 |POSIX|Description|
 |:----:|----|
@@ -439,8 +578,22 @@ str_locate_all("aaaa", "aa$")
 |__[:space:]__|Matches space characters (\s).|
 |__[:blank:]__|Matches space and tab.|
 
+Source: [`stringr` cheatsheet](https://github.com/rstudio/cheatsheets/blob/master/strings.pdf)
+
+---
+
+# Further predefined characters (POSIX)
+
 
 ```r
+*science_string &lt;- "Data Science: 9.5/10, Pseudoscience: 2.5/10"
+```
+
+--
+
+
+```r
+# Matching single digits
 str_extract_all(science_string, "[:digit:]")
 ```
 
@@ -449,7 +602,11 @@ str_extract_all(science_string, "[:digit:]")
 ## [1] "9" "5" "1" "0" "2" "5" "1" "0"
 ```
 
+--
+
+
 ```r
+# Matching (1 or more) digits
 str_extract_all(science_string, "[:digit:]+")
 ```
 
@@ -458,6 +615,18 @@ str_extract_all(science_string, "[:digit:]+")
 ## [1] "9"  "5"  "10" "2"  "5"  "10"
 ```
 
+--
+
+
+```r
+# Refining usage of meta characters
+str_extract_all(science_string, "(Data[:space:]|Pseudo)[:alpha:]cience")
+```
+
+```
+## [[1]]
+## [1] "Data Science"  "Pseudoscience"
+```
 
 ---
 
@@ -475,9 +644,50 @@ str_extract_all(science_string, "[:digit:]+")
 
 Table credit: [Learn regex the easy way](https://github.com/ziishaned/learn-regex)
 
+---
+
+# Shorthand character classes
+
 
 ```r
-# add examples
+*science_string &lt;- "Data Science: 9.5/10, Pseudoscience: 2.5/10"
+```
+
+--
+
+
+```r
+# Same output as "[:digit:]" or "[0:9]"
+str_extract_all(science_string, "\\d") 
+```
+
+```
+## [[1]]
+## [1] "9" "5" "1" "0" "2" "5" "1" "0"
+```
+
+--
+
+
+```r
+str_extract_all(science_string, "\\d+") 
+```
+
+```
+## [[1]]
+## [1] "9"  "5"  "10" "2"  "5"  "10"
+```
+
+--
+
+
+```r
+str_extract_all(science_string, "[\\w]cience\\:\\s\\w\\.\\d") 
+```
+
+```
+## [[1]]
+## [1] "Science: 9.5" "science: 2.5"
 ```
 
 ---
@@ -493,8 +703,37 @@ Table credit: [Learn regex the easy way](https://github.com/ziishaned/learn-rege
 
 Table credit: [Learn regex the easy way](https://github.com/ziishaned/learn-regex)
 
+---
+
+# Look arounds
+
 
 ```r
+*science_string &lt;- "Data Science: 9.5/10, Pseudoscience: 2.5/10"
+```
+
+--
+
+- Positive Lookahead
+
+
+```r
+# "x(?=y)" matches when x is followed by y
+str_extract_all(science_string, "[:digit:].[:digit:](?=/)")
+```
+
+```
+## [[1]]
+## [1] "9.5" "2.5"
+```
+
+--
+
+- Negative Lookahead
+
+
+```r
+# "x(?!y)" matches when x is not followed by y
 str_extract_all(science_string, "(?&lt;=/)[:digit:]+")
 ```
 
@@ -503,8 +742,43 @@ str_extract_all(science_string, "(?&lt;=/)[:digit:]+")
 ## [1] "10" "10"
 ```
 
+---
+
+# Look arounds
+
+
 ```r
-# add further examples
+*science_string &lt;- "Data Science: 9.5/10, Pseudoscience: 2.5/10"
+```
+
+--
+
+- Positive Lookbehind
+
+
+```r
+# "(?&lt;=y)x" matches x when is preceded by y
+str_extract_all(science_string, "(?&lt;=/)[:digit:]+")
+```
+
+```
+## [[1]]
+## [1] "10" "10"
+```
+
+--
+
+- Negative Lookbehind
+
+
+```r
+# "(?&lt;!y)x" matches when x is not preceded by y  
+str_extract_all(science_string, "(?&lt;!\\w)[:digit:].[:digit:]")
+```
+
+```
+## [[1]]
+## [1] "9.5" "2.5"
 ```
 
 ---
