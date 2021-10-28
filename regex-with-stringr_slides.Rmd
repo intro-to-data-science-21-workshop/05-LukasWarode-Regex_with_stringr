@@ -501,7 +501,7 @@ str_extract_all(science_string, "\\d+")
 --
 
 ```{r}
-str_extract_all(science_string, "[\\w]cience\\:\\s\\w\\.\\d") 
+str_extract_all(science_string, "[\\w]cience\\:\\s\\d\\.\\d") 
 ```
 
 ---
