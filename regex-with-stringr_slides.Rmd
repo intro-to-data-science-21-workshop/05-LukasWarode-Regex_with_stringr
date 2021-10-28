@@ -477,8 +477,31 @@ str_extract_all(science_string, "(Data[:space:]|Pseudo)[:alpha:]cience")
 
 Table credit: [Learn regex the easy way](https://github.com/ziishaned/learn-regex)
 
+---
+
+# Shorthand character classes
+
 ```{r}
-# add examples
+{{science_string <- "Data Science: 9.5/10, Pseudoscience: 2.5/10"}}
+```
+
+--
+
+```{r}
+# Same output as "[:digit:]" or "[0:9]"
+str_extract_all(science_string, "\\d") 
+```
+
+--
+
+```{r}
+str_extract_all(science_string, "\\d+") 
+```
+
+--
+
+```{r}
+str_extract_all(science_string, "[\\w]cience\\:\\s\\w\\.\\d") 
 ```
 
 ---
@@ -494,10 +517,56 @@ Table credit: [Learn regex the easy way](https://github.com/ziishaned/learn-rege
 
 Table credit: [Learn regex the easy way](https://github.com/ziishaned/learn-regex)
 
-```{r}
-str_extract_all(science_string, "(?<=/)[:digit:]+")
+---
 
-# add further examples
+# Look arounds
+
+```{r}
+{{science_string <- "Data Science: 9.5/10, Pseudoscience: 2.5/10"}}
+```
+
+--
+
+- Positive Lookahead
+
+```{r}
+# "x(?=y)" matches when x is followed by y
+str_extract_all(science_string, "[:digit:].[:digit:](?=/)")
+```
+
+--
+
+- Negative Lookahead
+
+```{r}
+# "x(?!y)" matches when x is not followed by y
+str_extract_all(science_string, "(?<=/)[:digit:]+")
+```
+
+---
+
+# Look arounds
+
+```{r}
+{{science_string <- "Data Science: 9.5/10, Pseudoscience: 2.5/10"}}
+```
+
+--
+
+- Positive Lookbehind
+
+```{r}
+# "(?<=y)x" matches x when is preceded by y
+str_extract_all(science_string, "(?<=/)[:digit:]+")
+```
+
+--
+
+- Negative Lookbehind
+
+```{r}
+# "(?<!y)x" matches when x is not preceded by y  
+str_extract_all(science_string, "(?<!\\w)[:digit:].[:digit:]")
 ```
 
 ---
