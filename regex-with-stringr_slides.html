@@ -488,6 +488,20 @@ str_extract_all(round_string, "(solution is)")
 .pull-right-wide[
 
 ```r
+str_extract_all(science_string, "(Data |Pseudo)[s|S]cience")
+```
+
+```
+## [[1]]
+## [1] "Data Science"  "Pseudoscience"
+```
+]
+
+--
+
+.pull-right-wide[
+
+```r
 str_extract_all(science_string, "\\.")
 ```
 
@@ -508,20 +522,6 @@ str_extract_all(science_string, "[0-9]\\.[0-9]")
 ```
 ## [[1]]
 ## [1] "9.5" "2.5"
-```
-]
-
---
-
-.pull-right-wide[
-
-```r
-str_extract_all(science_string, "(Data |Pseudo)[s|S]cience")
-```
-
-```
-## [[1]]
-## [1] "Data Science"  "Pseudoscience"
 ```
 ]
 
