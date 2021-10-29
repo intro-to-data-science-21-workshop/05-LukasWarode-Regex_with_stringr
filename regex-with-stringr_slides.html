@@ -20,7 +20,7 @@ class: center, middle, inverse, title-slide
 ### Anna-Lisa Wirth
 ### Lukas Warode
 ### Hertie School – <em>Introduction to Data Science</em>
-### 2021/11/04 (updated: 2021-10-28)
+### 2021/11/04 (updated: 2021-10-29)
 
 ---
 
@@ -35,23 +35,27 @@ class: center, middle, inverse, title-slide
 
 --
 
-2. Why `stringr` (in combination with regex)?
+1. Why `stringr` (in combination with regex)?
 
 --
 
-3. Meta characters
+1. Meta characters
 
 --
 
-4. Shorthand characters
+1. POSIX characters
 
 --
 
-5. Look arounds
+1. Shorthand characters
 
 --
 
-6. More complex example
+1. Lookarounds
+
+--
+
+1. More complex examples
 
 ---
 
@@ -135,8 +139,8 @@ cranlogs::cran_downloads(
 ## # A tibble: 2 × 2
 ##   package total_count
 ##   &lt;chr&gt;         &lt;dbl&gt;
-## 1 stringi     9711717
-## 2 stringr     9456804
+## 1 stringi     9717414
+## 2 stringr     9465024
 ```
 ]
 
@@ -682,7 +686,7 @@ str_extract_all(science_string, "\\d+")
 
 
 ```r
-str_extract_all(science_string, "[\\w]cience\\:\\s\\w\\.\\d") 
+str_extract_all(science_string, "[\\w]cience\\:\\s\\d\\.\\d") 
 ```
 
 ```
@@ -692,7 +696,7 @@ str_extract_all(science_string, "[\\w]cience\\:\\s\\w\\.\\d")
 
 ---
 
-# Look arounds
+# Lookarounds
 
 |Symbol|Description|
 |:----:|----|
@@ -705,7 +709,7 @@ Table credit: [Learn regex the easy way](https://github.com/ziishaned/learn-rege
 
 ---
 
-# Look arounds
+# Lookarounds
 
 
 ```r
@@ -744,7 +748,7 @@ str_extract_all(science_string, "(?&lt;=/)[:digit:]+")
 
 ---
 
-# Look arounds
+# Lookarounds
 
 
 ```r
