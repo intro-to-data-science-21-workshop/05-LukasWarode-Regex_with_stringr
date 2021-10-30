@@ -371,6 +371,14 @@ str_extract_all(round_string, "(solution is)")
 
 .pull-right-wide[
 ```{r}
+str_extract_all(science_string, "(Data |Pseudo)[s|S]cience")
+```
+]
+
+--
+
+.pull-right-wide[
+```{r}
 str_extract_all(science_string, "\\.")
 ```
 ]
@@ -380,14 +388,6 @@ str_extract_all(science_string, "\\.")
 .pull-right-wide[
 ```{r}
 str_extract_all(science_string, "[0-9]\\.[0-9]")
-```
-]
-
---
-
-.pull-right-wide[
-```{r}
-str_extract_all(science_string, "(Data |Pseudo)[s|S]cience")
 ```
 ]
 
