@@ -544,7 +544,7 @@ str_extract_all(science_string, "[:digit:].[:digit:](?=/)")
 
 ```{r}
 # "x(?!y)" matches when x is not followed by y
-str_extract_all(science_string, "(?<=/)[:digit:]+")
+str_extract_all(science_string, "[:digit:](?!,)")
 ```
 
 ---
