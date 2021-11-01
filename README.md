@@ -1,7 +1,15 @@
 # Regular expressions with `stringr`
 
-## [Presentation Part 1](https://raw.githack.com/intro-to-data-science-21-workshop/05-LukasWarode-Regex_with_stringr/main/regex-with-stringr_slides.html)
-## [Presentation Part 2](https://raw.githack.com/intro-to-data-science-21-workshop/05-LukasWarode-Regex_with_stringr/main/more_complex_example_video_part_2.html)
+## Materials
+### Presentation Part 1, Lukas Warode
+- [__.html__](https://raw.githack.com/intro-to-data-science-21-workshop/05-LukasWarode-Regex_with_stringr/main/regex-with-stringr_slides.html)
+- [__.Rmd__](https://github.com/intro-to-data-science-21-workshop/05-LukasWarode-Regex_with_stringr/blob/main/regex-with-stringr_slides.Rmd)
+### Presentation Part 2, Anna-Lisa Wirth
+- [__.html__](https://raw.githack.com/intro-to-data-science-21-workshop/05-LukasWarode-Regex_with_stringr/main/more_complex_example_video_part_2.html)
+- [__.Rmd__](https://github.com/intro-to-data-science-21-workshop/05-LukasWarode-Regex_with_stringr/blob/main/more_complex_example_video_part_2.Rmd)
+### Live Coding Session, Anna-Lisa Wirth
+- [__.html__](https://raw.githack.com/intro-to-data-science-21-workshop/05-LukasWarode-Regex_with_stringr/main/live_session.html)
+- [__.Rmd__](https://github.com/intro-to-data-science-21-workshop/05-LukasWarode-Regex_with_stringr/blob/main/live_session.Rmd)
 
 ## Summary
 
