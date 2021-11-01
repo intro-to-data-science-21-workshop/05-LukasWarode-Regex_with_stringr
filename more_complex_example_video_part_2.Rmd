@@ -1,0 +1,71 @@
+---
+title: "More Complex Example - Interview Data"
+author: "Anna-Lisa Wirth"
+date: "1/11/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+Regex is great for data wrangling and below you will see why as we are going to directly compare code with and without regex on the same problem.
+The Problem: Let's say you have interview data. To be more concrete, let's say you are a Shoshana Zuboff fan, a professor who furthered the development of the concept of surveillance capitalism. You want to know how much input she actually gets to give during interviews and maybe later on compare to male authors' interviews. 
+
+👩‍💻
+
+## Solution 1 - without regex 🐌
+
+```{r w/o regex}
+#Assigning the interview data to a variable
+
+interview <- 'GAZETTE: The digital revolution began with great promise. When did you start worrying that the tech giants driving it were becoming more interested in exploiting us than serving us? ZUBOFF: In my 2002 book, “The Support Economy,” I looked at the challenges to capitalism in shifting from a mass to an individual-oriented structure of consumption. I discussed how we finally had the technology to align the forces of supply and demand. However, the early indications were that the people framing that first generation of e-commerce were more preoccupied with tracking cookies and attracting eyeballs for advertising than they were in the historic opportunity they faced. For a time I thought this was part of the trial and error of a profound structural transformation, but, certainly by 2007, I understood that this was actually a new variant of capitalism that was taking hold of the digital milieu. The opportunities to align supply and demand around the needs of individuals were overtaken by a new economic logic that offered a fast track to monetization.'
+
+#Just to be sure there is a several code line non-regex solution to this:
+
+#Splitting the string 
+
+parts <- unlist(str_split(interview, "ZUBOFF"))
+
+#Taking the character lengths of the parts
+
+part_gaz <- str_length(str_split_fixed(interview, "ZUBOFF", n = 2)[,1])
+part_zub <- str_length(str_split_fixed(interview, "ZUBOFF", n = 2)[,2]) 
+
+#Calculating the part of Zuboff's commentary
+
+comparison1 <- (round(part_zub/(part_zub+part_gaz), digits=2))*100
+comparison1
+
+
+```
+
+## Solution 2 - with regex  🚀
+
+But wait, we are here for regex. So let's see our time saver hero of the day:
+
+```{r w/ regex}
+
+#Here a more reusable version with regex:
+
+split_interview <- unlist(str_split(interview, "[A-Z]{1,}[\\:*.]"))
+
+#Note that because we told regex to split it for every occurence of thw speaker indication we will have to disregard the here empty first string that is produced for our example. Therefore, we use 2 and 3. 
+
+gazette <- str_length(split_interview[2])
+
+zuboff <- str_length(split_interview[3])
+
+comparison2 <- (round(zuboff/(zuboff+gazette), digits=2))*100
+comparison2
+
+```
+
+As you see almost a fifth of the space of the edited text goes to the questions posed to the author. Now, you see how you can apply regex to make your coding faster and transferable even as a beginner. 🤩
+
+Used source of the interview:https://news.harvard.edu/gazette/story/2019/03/harvard-professor-says-surveillance-capitalism-is-undermining-democracy/
+
+
+
+
