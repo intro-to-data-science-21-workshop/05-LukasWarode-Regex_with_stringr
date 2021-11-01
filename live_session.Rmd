@@ -1,0 +1,109 @@
+---
+title: "3x5_regex"
+subtitle: "live-session for IDS"
+author: "Anna-Lisa Wirth and Lukas Warode"
+date: "01/11/2021"
+output: 
+  html_document:
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+
+```
+
+Welcome to 3x5_regex. We will give you 3 practical examples for the use of regex. Each of which will require an initial 5 minute investment of your time. The reward: Being able to use regex when working with messy sentence-mix-data-constructs. It will make you so much quicker in handling those kinds of things. So pay it forward and come a long! 
+
+So you don't have to take my word for it - here some more motivational fodder:
+"Regular Expression, or regex or regexp in short, is extremely and amazingly powerful in searching and manipulating text strings, particularly in processing text files. One line of regex can easily replace several dozen lines of programming codes." https://www3.ntu.edu.sg/home/ehchua/programming/howto/Regexe.html
+
+`r emoji::emoji("hammer_and_wrench")` *regex is perfect for data wrangling* 
+
+## Example 1: Data underwater `r emoji::emoji("ocean")`
+
+Using excerpts of an article from https://spectrum.ieee.org/want-an-energyefficient-data-center-build-it-underwater/particle-10
+
+Ever wondered how to extract all numbers from a news article about Microsoft's underwater data centers? Let's have a look:
+
+```{r}
+
+#Assigning the sample data to a variable
+
+data_underwater <- 'Of course, the colder the surrounding ocean, the better this scheme will work. To get access to chilly seawater even during the summer or in the tropics, you need only put the pods sufficiently deep. For example, at 200 meters’ depth off the east coast of Florida, the water remains below 15 °C all year round.
+
+Our tests with a prototype Natick pod, dubbed the “Leona Philpot” (named for an Xbox game character), began in August 2015. We submerged it at just 11 meters’ depth in the Pacific near San Luis Obispo, Calif., where the water ranged between 14 and 18 °C.'
+
+#Writing the regex and extracting the numbers
+
+duw_numbers <- unlist(str_extract_all(data_underwater, "[:digit:]{1,}"))
+duw_numbers
+```
+## Example 2: Netflix's market dominance `r emoji::emoji("television")`
+
+Using excerpts of an article from https://www.vulture.com/2021/10/netflix-new-ratings-metrics-viewership-analysis.html
+
+As Netflix is a service used by most of us it might be worth having a look at how their market power is described online. In the interest of time - why don't we filter for the parts in the article that give us actual numbers?
+
+```{r}
+
+#Assigning the sample data to a variable
+
+netflix <- "Netflix is such a big force in the culture that it’s rarely not making headlines in some way. But even by that standard, the streaming giant has been dominating news cycles to an almost ridiculous degree the past few weeks.
+
+There was its massive dominance at the Emmys last month, where it not only crushed rival HBO but tied Nixon-era CBS for the most wins of any platform in TV history.
+
+That was soon followed by the shocking success of Squid Game, which came out of nowhere (at least to clueless American audiences) to become a global sensation worthy of SNL parody just a month after launch. (And Nielsen now confirms how big it is: The show’s first full week snagged a massive 1.9 billion minutes of streaming in the States, an 800% jump from opening weekend. Needless to say, it was the No. 1 streaming show in America.)"
+
+# What will happen if I run this regex?
+
+guess <- unlist(str_extract_all(netflix, "[.\\w*]"))
+guess
+
+#Not very useful, huh?
+#Pro tip - say to yourself out loud what the regex would do in order to wrestle the intimidating, unintelligible look of it.I know, it sounds silly. But it does the magic ;) 
+
+#So how about the next one?
+
+numbers_prio <-str_subset(unlist(str_split(netflix, "(?<=\\.)\\s+")), "\\d+") 
+
+numbers_prio
+
+#Looks much more useful. Now we got relevant information out of the material.
+```
+
+## Example 3: Making the invisible visible `r emoji::emoji("woman_technologist")`
+
+Picking up data from the author's website https://carolinecriadoperez.com/about/
+
+So, as Caroline Criado-Perez's work is about the (gender) data gap, let's try to find a way for ourselves to analyse the appearance of gender in text.
+
+
+```{r}
+
+#Assigning the sample data to a variable
+
+caroline <- "Caroline Criado Perez is a best-selling and award-winning writer, broadcaster and award-winning feminist campaigner. 
+
+Her #1 Sunday Times best-selling second book, INVISIBLE WOMEN: Exposing Data Bias in a World Designed for Men, was published in March 2019 by Chatto & Windus in the UK & Abrams in the US. It is being translated into 30 languages, and is the winner of the 2019 Royal Society Science Book Prize, the 2019 Books Are My Bag Readers Choice Award, and the 2019 Financial Times Business Book of the Year Award. 
+
+Caroline was the 2013 recipient of the Liberty Human Rights Campaigner of the Year award, and was named OBE in the Queen’s Birthday Honours 2015. In 2020 she was the recipient of Finland’s HÄN award for promoting equality, and in 2021 she received an honourary doctorate from the University of Lincoln.
+
+She writes a weekly newsletter keeping up with the latest on the gender data gap at newsletter.carolinecriadoperez.com"
+
+#Extracting the occurring female names and pronouns 
+
+gender_pro <- str_extract_all(caroline, "Caroline|[S|s]he|[H|h]er")
+
+gender_pro
+
+#So how often does the female name or pronoun get mentioned in this totally unbiased text?
+
+length(unlist(gender_pro))
+
+```
+Now have fun with regex and develop your own examples `r emoji::emoji("victory")`
+
+PS: *Pro tip - say to yourself out loud what the regex would do in order to handle the intimidating, unintelligible look of it. I know, it sounds silly. But it does the magic* `r emoji::emoji("contest")`
